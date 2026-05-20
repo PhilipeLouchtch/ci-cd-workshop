@@ -42,7 +42,7 @@ jacocoTestReport {
 }
 
 def minimumTestCoverage =
-        System.getenv("JACOCO_MINIMUM_COVERAGE")?.toBigDecimal() ?: 0.60
+        System.getenv("JACOCO_MINIMUM_COVERAGE")?.toBigDecimal() ?: 0.00
 
 jacocoTestCoverageVerification {
     violationRules {

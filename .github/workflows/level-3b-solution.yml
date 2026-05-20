@@ -1,4 +1,4 @@
-name: Level 3B - Boo's Haunted Mansion (Solution)
+name: Level 3b - Boo's Haunted Mansion (Solution)
 
 on:
   workflow_dispatch: {}

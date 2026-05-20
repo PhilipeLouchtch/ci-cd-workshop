@@ -73,16 +73,36 @@ jobs:
           name: jacoco-reports
           path: .
 
+      - name: List downloaded files (debug)
+        run: |
+          echo "Listing potential JaCoCo locations:"
+          find . -type f \( -name "jacocoTestReport.xml" -o -path "./build/reports/jacoco/*" \) -print | sed -n '1,200p'
+
       - name: Enforce coverage threshold
         env:
           THRESHOLD: ${{ env.THRESHOLD }}
           REPORT_FILE: ${{ env.JACOCO_XML }}
         run: |
           set -euo pipefail
+          # Resolve report path robustly across artifact extraction layouts
           if [ ! -f "$REPORT_FILE" ]; then
-            echo "[ERROR] JaCoCo XML report niet gevonden op $REPORT_FILE"
-            echo "Heb je de JaCoCo plugin en XML report geconfigureerd in Gradle? Zie level-3-README.md."
-            exit 1
+            alt="./jacoco-reports/${REPORT_FILE}"
+            if [ -f "$alt" ]; then
+              REPORT_FILE="$alt"
+            else
+              found=$(find . -type f -name jacocoTestReport.xml | head -n1 || true)
+              if [ -n "${found}" ] && [ -f "${found}" ]; then
+                REPORT_FILE="${found}"
+              else
+                echo "[ERROR] JaCoCo XML report niet gevonden op:"
+                echo "  - $REPORT_FILE"
+                echo "  - $alt"
+                echo "Zocht naar 'jacocoTestReport.xml' onder: $(pwd)"
+                find . -maxdepth 6 -type f -name jacocoTestReport.xml || true
+                echo "Heb je de JaCoCo plugin en XML report geconfigureerd in Gradle? Zie level-3-README.md."
+                exit 1
+              fi
+            fi
           fi
           line=$(grep -o '<counter type="LINE"[^>]*/>' "$REPORT_FILE" | tail -n1)
           if [ -z "$line" ]; then

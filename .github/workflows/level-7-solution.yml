@@ -1,3 +1,4 @@
+
 #############################################
 # Level 7 — Star Road (SOLUTION)
 #
@@ -25,7 +26,7 @@ env:
   IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
   LATEST: ghcr.io/${{ github.repository }}:latest
   JACOCO_XML: build/reports/jacoco/test/jacocoTestReport.xml
-  THRESHOLD: "0.50" # 80% //TODO: put back to 0.80
+  THRESHOLD: "0.80"
 
 jobs:
   build-test:
@@ -148,16 +149,19 @@ jobs:
       contents: read
       packages: write
     steps:
+      - name: Check out code (voor Dockerfile)
+        uses: actions/checkout@v4
+
       - name: Download JAR artifact
         uses: actions/download-artifact@v4
         with:
           name: app-jar
-          path: app-jar
+          path: docker
 
       - name: List downloaded JARs (debug)
         run: |
           echo "Searching for JAR in artifact..."
-          find app-jar -type f -name "*.jar" -print | sed -n '1,200p'
+          find docker -type f -name "*.jar" -print | sed -n '1,200p'
 
       - name: Login to GHCR (alleen op main)
         if: github.ref == 'refs/heads/main'
@@ -167,14 +171,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build container image from JAR (Paketo)
-        env:
-          BP_JVM_VERSION: "21.*"
+      - name: Build container image (Docker)
         run: |
-          # Ensure the bootable jar exists so the "executable-jar" buildpack path can be used
-          ./gradlew bootJar -x test --no-daemon
-          # Use a Java-capable Paketo builder explicitly to avoid detection issues
-          ./gradlew bootBuildImage --imageName ${IMAGE} --builder paketobuildpacks/builder-jammy-base
+          set -euo pipefail
+          # Normalize path/name so Dockerfile can COPY it without build args
+          cp -f "${JAR_FILE}" docker/app.jar
+          docker build \
+            -t ${IMAGE} \
+            -f docker/Dockerfile \
+            docker
 
       - name: Push image (alleen op main)
         if: github.ref == 'refs/heads/main'

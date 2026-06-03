@@ -1,99 +1,66 @@
-# CI/CD workshop Code Foundry
+# CI/CD Workshop Code Foundry - GitHub Actions (Mario Edition)
+![img.png](img.png)
 
-## Build Your Own Pipeline (Mario & Luigi Style)
-In deze kennissessie ga je zelfstandig (of samen, you can self bepil) een pipeline opzetten voor een bestaande applicatie.
-Het doel is niet alleen om "iets werkend te krijgen", maar om inzicht te krijgen in:
-- hoe een CI/CD pipeline is opgebouwd
-- welke stappen essentieel zijn
-- hoe feedbackloops het beste vormgegeven kunnen worden
-- hoe je pipelines onderhoudbaar en betrouwbaar houdt.
+In deze workshop/kennissessie ga je zelfstandig (of samen, you can self bepil) verschillende pipelines opzetten voor een bestaande applicatie.
+Elk "level" introduceert nieuwe concepten binnen GitHub Actions en moderne CI/CD-praktijken. De levels worden natuurlijk steeds complexer, maar zijn niet afhankelijk van elkaar.
+Voel je te allen tijde vrij om zelf los te gaan en te experimenteren. Alle levels en hun voorbeeldoplossingen zijn Mario‑themed, dus gaaf als je de pipeline steps ook in dat thema houdt!
 
-De workshop is opgebouwd uit meerdere levels. Elk level bouwt verder op de vorige, maar voel je te allen tijde vrij om zelf los te gaan en te experimenteren. Alle levels en hun voorbeeldoplossingen zijn Mario‑themed, met echte level‑namen uit het Mushroom Kingdom.
+De snelste zal gekroond worden (symbolisch, want heb geen echte kroon) tot de ultieme Mario, maar het is absoluut geen race (of wel... wederom, you can self bepil).
+Mocht je vast komen te zitten, kan je jouw werk vergelijken met onze referentie oplossingen (de solution pipelines). NIET CHEATEN! OF wel, want...
 
-### Doel aan het einde
-Je pipeline:
-- draait automatisch bij een push of PR
-- buildt de applicatie
-- voert tests uit en faalt bij fouten
-- hanteert een quality gate (coverage)
-- bouwt en archiveert een artifact
-- bouwt een Docker image en pushed conditioneel vanaf `main`
-- maakt slim gebruik van caching voor snelheid
+## BELANGRIJK - LEES DIT
+Zorg dat je dit project hebt geforkt! Anders krijgen we iedereen z'n pipeline runs door elkaar te zien en wordt het 1 grote chaos.
 
-### Technische context
-#### Applicatie
-Dit project bevat een eenvoudige backend applicatie gebouwd met:
-- Java 21
-- Spring Boot
-- Gradle
-- (optioneel) Docker
+1. Ga naar de repository op GitHub.com
+2. Klik rechtsboven op **Fork**
+3. Selecteer je eigen account
+4. Werk in jouw eigen fork
 
-De applicatie bevat o.a.:
-- REST endpoints
-- Unit tests
-- Integration(-like) tests
+## Aan de slag - YAY
+De levels zijn te vinden onder `.github/workflows`. Elk level bevat 3 bestanden:
+- `level-x.yml` -> De opdracht, hier ga jij mooie dingen in bouwen!
+- `level-x-README.md` -> uitleg + hints over de opdracht
+- `level-x-solution.yml` -> referentie oplossing die wij hebben gemaakt om te kijken hoe het nou echt moet (zo ver onze kennis gaat)
 
-#### Applicatie lokaal draaien
-```shell
-./gradlew bootRun
-```
+1. LEES DE README!
+2. Vul de opdracht yml aan (zie de TODO's)
+3. Run via Actions tab
+4. Debug voor je leven (of tot de pipeline groen is)
+5. Vergelijk met de solution
+6. Ga naar het volgende level
 
-#### Tests uitvoeren
-```shell
-./gradlew test
-```
+## Github Actions - BASICS
 
-#### Docker image builden (optioneel)
-```shell
-docker build -t cicd-workshop .
-```
+#### Starten van een workflow
+1. Ga naar de repository op Github.com
+2. Klik op de tab **Actions**
+3. Selecteer de gewenste workflow
+4. Klik op **Run workflow** (wauwwwwww)
+5. Kies je branch (we houden het lekker op main)
+6. Klik wederom op **Run workflow** (dubbel wauw)
 
----
+#### Concepten
 
-### Workshop Levels (Mario‑themed)
-Alle opdrachten en voorbeeldoplossingen staan in `.github/workflows`.
+**Workflow:**
+Een volledig pipeline bestand (`.yml`)
 
-- Level 1 — Yoshi's Island: Pipeline starten en build draaien
-  - Stub: `.github/workflows/level-1.yml`
-  - Uitleg: `.github/workflows/level-1-README.md`
-  - Oplossing: `.github/workflows/level-1-solution.yml`
+**Job:**
+Een groep stappen die op een runner draait
 
-- Level 2 — Koopa's Fortress: Tests moeten de build laten falen
-  - Stub: `.github/workflows/level-2.yml`
-  - Uitleg: `.github/workflows/level-2-README.md`
-  - Oplossing: `.github/workflows/level-2-solution.yml`
+**Step:**
+Een individuele actie (bijv. build, test, docker build etc.)
 
-- Level 3 — Boo's Haunted Mansion: Quality gate met JaCoCo coverage
-  - Stub: `.github/workflows/level-3.yml`
-  - Uitleg: `.github/workflows/level-3-README.md`
-  - Oplossing: `.github/workflows/level-3-solution.yml`
+**Runner:**
+De machine waarop de pipeline draait
 
-- Level 4 — Toad's Treasure House: Artifact builden en uploaden
-  - Stub: `.github/workflows/level-4.yml`
-  - Uitleg: `.github/workflows/level-4-README.md`
-  - Oplossing: `.github/workflows/level-4-solution.yml`
+**Artifact:**
+Output van een pipeline (bijv. jar, coverage rapport etc.)
 
-- Level 5 — Bowser's Castle: Docker image builden (push alleen vanaf main)
-  - Stub: `.github/workflows/level-5.yml`
-  - Uitleg: `.github/workflows/level-5-README.md`
-  - Oplossing: `.github/workflows/level-5-solution.yml`
+**Contexts:**
+Dynamische waarden, zoals:
+`${{ github.repository }}`
+`${{ github.sha }}`
 
-- Level 6 — Rainbow Road: Speed‑run met caching (Gradle + Docker layers)
-  - Stub: `.github/workflows/level-6.yml`
-  - Uitleg: `.github/workflows/level-6-README.md`
-  - Oplossing: `.github/workflows/level-6-solution.yml`
+## Extra
 
-- Level 7 — Star Road: Monoliet lezen en refactoren naar herbruikbare onderdelen
-  - Stub: `.github/workflows/level-7.yml`
-  - Uitleg: `.github/workflows/level-7-README.md`
-  - Oplossing: `.github/workflows/level-7-solution.yml`
-
-Opmerking: De stub‑workflows zijn opzettelijk incompleet en draaien alleen via `workflow_dispatch` zodat ze niet per ongeluk starten. De oplossing‑workflows gebruiken ook `workflow_dispatch`, met commentaar hoe je een "echte" trigger toevoegt.
-
-### Zo gebruik je de workshop
-1. Open per level de `level-x-README.md` voor doel, criteria en hints.
-2. Vul de stub `level-x.yml` aan totdat de criteria gehaald worden.
-3. Draai de workflow handmatig via het Actions‑tab ("Run workflow").
-4. Vergelijk met `level-x-solution.yml` als je vastloopt.
-
-
+Als je tot hier hebt gelezen, koekje voor jou!

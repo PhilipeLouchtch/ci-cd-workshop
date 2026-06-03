@@ -32,6 +32,10 @@ tasks.named('test') {
     finalizedBy(tasks.jacocoTestCoverageVerification)
 }
 
+tasks.named("bootJar") {
+    enabled = true
+}
+
 jacocoTestReport {
     dependsOn tasks.test
 
@@ -57,11 +61,4 @@ jacocoTestCoverageVerification {
             }
         }
     }
-}
-
-bootBuildImage {
-    builder = "paketobuildpacks/builder-jammy-base"
-    environment = [
-            "BP_JVM_VERSION": "21"
-    ]
 }

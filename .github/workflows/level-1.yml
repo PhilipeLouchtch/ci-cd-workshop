@@ -1,6 +1,7 @@
 name: Level 1 - Yoshi's Island
 
-on: push
+on:
+  workflow_dispatch: {}
 
 jobs:
   build:
@@ -15,3 +16,6 @@ jobs:
 
       - name: Build
         run: ./gradlew build
+
+      - name: Test
+        run: ./gradlew test

@@ -1,7 +1,6 @@
 name: Level 2 - Koopa's Fortress
 
-on:
-  workflow_dispatch: {}
+on: push
 
 jobs:
   test:
@@ -11,10 +10,14 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v6
 
-        # TODO - Configureer JDK 21 - hint: wellicht ook iets met actions?
+      - name: Compile
+        uses: ./.github/actions/setup-java-gradle
 
-        # TODO - Setup Gradle
+      - name: Test
+        run: ./gradlew test
 
-        # TODO - Run een gradle test command
-
-        # TODO - Upload een test rapport met het resultaat van de gedraaide testen
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v6
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: '**/*.xml'
